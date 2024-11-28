@@ -2,19 +2,17 @@ import { atom } from "recoil"
 
 type SelectedGrid = {
     rank: string,
-    file: string 
+    file: string,
+    isSelected: boolean
 }
 const selectedGridAtom = atom<SelectedGrid>({
     key: "selectedGridAtom",
     default: {
         rank : "",
-        file : "" 
+        file : "",
+        isSelected: false
     }
 })
 
-const tempAtom = atom({
-    key: "tempAtom",
-    default: 1
-})
 
-export {selectedGridAtom , tempAtom};
+export {selectedGridAtom};
