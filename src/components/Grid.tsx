@@ -1,12 +1,38 @@
 "use client"
 
-import { selectedGridAtom } from "@/recoil/atom";
+import { BoardAtom, selectedGridAtom } from "@/recoil/atom";
+import { Color, PieceSymbol, Square } from "chess.js";
 import { useEffect, useState } from "react";
-import { constSelector, useRecoilState } from "recoil";
 
-export const Grid = ({rank , file ,fileIndex} : {rank : string , file : string , fileIndex : number}) =>
+import {useRecoilState, useRecoilValue } from "recoil";
+
+type GridDetails = {
+    square : Square,
+    type : PieceSymbol,
+    color : Color
+} | null | undefined
+
+export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , file : string , fileIndex : number , rankIndex : number}) =>
 {
     const [selectedGrid , setSelectedGrid] = useRecoilState(selectedGridAtom);
+    const board = useRecoilValue(BoardAtom);
+    const [gridDetails , setGridDetails] = useState<GridDetails>(null);
+    
+
+    useEffect(() =>
+    {      
+        if(board && board.at(rankIndex)?.at(fileIndex))
+        {
+            setGridDetails(board[rankIndex][fileIndex]);
+        }
+    } , [board]);
+
+    useEffect(() => {
+        if(gridDetails)
+        {
+            console.log(gridDetails);
+        }
+    } , [gridDetails])
 
     const registerClick = () =>
     {
@@ -22,7 +48,7 @@ export const Grid = ({rank , file ,fileIndex} : {rank : string , file : string ,
         })
     }
     return(
-        <div  className={`h-[80px] w-[80px] flex flex-col relative cursor-pointer ${
+        <div  className={`h-[80px] w-[80px] flex justify-center items-center relative cursor-pointer ${
           selectedGrid.file == file && selectedGrid.rank == rank  && selectedGrid.isSelected
           ? "bg-red-200"
           : (fileIndex + Number(rank)) % 2
@@ -32,6 +58,11 @@ export const Grid = ({rank , file ,fileIndex} : {rank : string , file : string ,
             <div className={`absolute top-1 left-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
                 {file== "a"  && rank}
             </div>
+           {
+            gridDetails && <div>
+                {gridDetails.type}
+            </div>
+           }
             <div className={`absolute bottom-0.5 right-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
                 {rank=="1" && file}
             </div>

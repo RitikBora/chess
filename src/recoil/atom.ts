@@ -1,3 +1,4 @@
+import { Color, PieceSymbol, Square } from "chess.js"
 import { atom } from "recoil"
 
 type SelectedGrid = {
@@ -14,5 +15,25 @@ const selectedGridAtom = atom<SelectedGrid>({
     }
 })
 
+const IsMoveStartedAtom = atom({
+    key : "isMoveStartedAtom",
+    default : false
+})
 
-export {selectedGridAtom};
+type Board = ({
+    square: Square;
+    type: PieceSymbol;
+    color: Color;
+} | null)[][]
+
+const emptyBoard: Board = Array(8)
+    .fill(null)
+    .map(() => Array(8).fill(null));
+
+const BoardAtom = atom<Board>({
+    key: "boardAtom",
+    default: emptyBoard
+})
+
+
+export {selectedGridAtom , IsMoveStartedAtom , BoardAtom };
