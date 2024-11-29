@@ -2,6 +2,7 @@
 
 import { BoardAtom, selectedGridAtom } from "@/recoil/atom";
 import { Color, PieceSymbol, Square } from "chess.js";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import {useRecoilState, useRecoilValue } from "recoil";
@@ -60,7 +61,12 @@ export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , f
             </div>
            {
             gridDetails && <div>
-                {gridDetails.type}
+                <Image
+                    src={`/images/Chess_${gridDetails.type}${gridDetails.color}45.svg`}
+                    alt={`${gridDetails.color} ${gridDetails.type}`}
+                    width={70}
+                    height={70}
+                />
             </div>
            }
             <div className={`absolute bottom-0.5 right-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
