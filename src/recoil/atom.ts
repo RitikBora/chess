@@ -1,19 +1,7 @@
 import { Color, PieceSymbol, Square } from "chess.js"
 import { atom } from "recoil"
 
-type SelectedGrid = {
-    rank: string,
-    file: string,
-    isSelected: boolean
-}
-const selectedGridAtom = atom<SelectedGrid>({
-    key: "selectedGridAtom",
-    default: {
-        rank : "",
-        file : "",
-        isSelected: false
-    }
-})
+
 
 const IsMoveStartedAtom = atom({
     key : "isMoveStartedAtom",
@@ -36,4 +24,4 @@ const BoardAtom = atom<Board>({
 })
 
 
-export {selectedGridAtom , IsMoveStartedAtom , BoardAtom };
+export {IsMoveStartedAtom , BoardAtom };

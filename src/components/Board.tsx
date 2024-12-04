@@ -5,6 +5,7 @@ import { Grid } from "./Grid";
 import { Chess } from 'chess.js';
 import { useEffect } from "react";
 import { BoardAtom } from "@/recoil/atom";
+import { useDrop } from "react-dnd";
 
 
 
@@ -20,6 +21,28 @@ export const Board = () =>
         setBoard(board);
     })
     
+const [{ isOver }, drop] = useDrop(() => ({
+  accept: "piece", 
+  drop: (item: { id: string; position: string }, monitor) => {
+    const dropTarget = monitor.getClientOffset(); 
+    
+     const dropElement = document.elementFromPoint(
+      dropTarget?.x || 0,
+      dropTarget?.y || 0
+    ); // Get the DOM element at the drop position
+
+    const key = dropElement?.getAttribute("data-key");
+ 
+    const dropPosition = key;
+  
+    return { position: dropPosition }; 
+  },
+  collect: (monitor) => ({
+    isOver: !!monitor.isOver(),
+  }),
+}));
+
+
     
     
     const ranks= ["8" , "7" , "6" , "5" , "4" , "3" , "2" , "1"];
@@ -27,7 +50,7 @@ export const Board = () =>
 
 
     return(
-        <div className="h-[640px] w-[640px]  bg-amber-50 flex flex-col">
+        <div ref={drop as any} className="h-[640px] w-[640px]  bg-amber-50 flex flex-col">
             {
                 ranks.map((rank , index) =>
                 {
@@ -59,4 +82,6 @@ const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
         </div>
     )
 }
+
+
 
