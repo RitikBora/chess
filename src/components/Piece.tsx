@@ -11,33 +11,42 @@ export const Piece = ({
   position: string;
   color: string;
   type: string;
-
   movePiece?: (newPosition: string, pieceId: string) => void;
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
-  type: "piece", // The type of the draggable item
-  item: { id: `${color}${type}`, position }, // Include current position of the piece
-  end: (item, monitor) => {
-    const dropResult = monitor.getDropResult<{ position: string }>();
-    if (item && dropResult) {
-      console.log(item);
-      console.log(dropResult);
-      // movePiece?.(dropResult.position, item.id);
-    }
-  },
-  collect: (monitor) => ({
-    isDragging: !!monitor.isDragging(),
-  }),
-}));
-
+    type: "piece",
+    item: { id: `${color}${type}`, position },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult<{ position: string }>();
+      if (item && dropResult) {
+        console.log(item);
+        console.log(dropResult);
+        // movePiece?.(dropResult.position, item.id);
+      }
+    },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   return (
-    <div ref={drag as any} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <div
+      ref={drag as any}
+      style={{
+        opacity: isDragging ? 0 : 1,
+        backgroundColor: "transparent",
+        display: "inline-block",
+        transform: isDragging ? "scale(0.7)" : "scale(1)", // Apply scale to decrease size during dragging
+      }}
+    >
       <Image
         src={`/images/Chess_${type}${color}45.svg`}
         alt={`${color} ${type}`}
         width={70}
         height={70}
+        style={{
+          display: "block", // Prevent unwanted inline spacing
+        }}
       />
     </div>
   );
