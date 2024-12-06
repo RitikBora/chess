@@ -15,7 +15,7 @@ type GridDetails = {
 } | null | undefined
 
 
-export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , file : string , fileIndex : number , rankIndex : number}) =>
+export const Grid = ({rank , file , fileIndex  , rankIndex , movePiece} : {rank : string , file : string , fileIndex : number , rankIndex : number , movePiece?: (startPosition: string , newPosition: string, pieceId: string) => void;}) =>
 {
     const board = useRecoilValue(BoardAtom);
     const [gridDetails , setGridDetails] = useState<GridDetails>(null);
@@ -23,9 +23,13 @@ export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , f
 
     useEffect(() =>
     {      
+       
         if(board && board.at(rankIndex)?.at(fileIndex))
         {
             setGridDetails(board[rankIndex][fileIndex]);
+        }else
+        {
+            setGridDetails(null);
         }
     } , [board]);
 
@@ -44,7 +48,7 @@ export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , f
                 {file== "a"  && rank}
             </div>
             {
-                gridDetails && <Piece position={gridDetails.square} color={gridDetails.color} type ={gridDetails.type}/>
+                gridDetails && <Piece position={gridDetails.square} color={gridDetails.color} type ={gridDetails.type} movePiece={movePiece}/>
             }
             <div className={`absolute bottom-0.5 right-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
                 {rank=="1" && file}

@@ -11,7 +11,7 @@ export const Piece = ({
   position: string;
   color: string;
   type: string;
-  movePiece?: (newPosition: string, pieceId: string) => void;
+  movePiece?: (startPosition: string , newPosition: string, pieceId: string) => void;
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "piece",
@@ -19,9 +19,7 @@ export const Piece = ({
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<{ position: string }>();
       if (item && dropResult) {
-        console.log(item);
-        console.log(dropResult);
-        // movePiece?.(dropResult.position, item.id);
+        movePiece?.(position , dropResult.position, item.id);
       }
     },
     collect: (monitor) => ({
@@ -34,9 +32,8 @@ export const Piece = ({
       ref={drag as any}
       style={{
         opacity: isDragging ? 0 : 1,
-        backgroundColor: "transparent",
-        display: "inline-block",
-        transform: isDragging ? "scale(0.7)" : "scale(1)", // Apply scale to decrease size during dragging
+       
+        transform: isDragging ? "scale(0.7)" : "scale(1)", 
       }}
     >
       <Image
@@ -45,7 +42,7 @@ export const Piece = ({
         width={70}
         height={70}
         style={{
-          display: "block", // Prevent unwanted inline spacing
+          display: "block", 
         }}
       />
     </div>

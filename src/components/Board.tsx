@@ -13,13 +13,29 @@ export const Board = () =>
 {
     const setBoard = useSetRecoilState(BoardAtom);
     const chess = new Chess();
-    const board = chess.board();
+    
+    const movePiece = (startPosition :string , newPosition : string , pieceId : string) =>
+    {
+        try
+        {
+            chess.move({from: startPosition , to : newPosition});
 
+            setBoard(chess.board());
+        }catch(err)
+        {
+            console.log(err);
+        }
+        
+    }
+    
     useEffect(() => 
     {
         
-        setBoard(board);
-    })
+        setBoard(chess.board());
+    
+    } , []);
+
+   
     
 const [{ isOver }, drop] = useDrop(() => ({
   accept: "piece", 
@@ -55,7 +71,7 @@ const [{ isOver }, drop] = useDrop(() => ({
                 ranks.map((rank , index) =>
                 {
                     return(
-                       <Row rank={rank} rankIndex = {index} key={rank}  />
+                       <Row rank={rank} rankIndex = {index} key={rank} movePiece={movePiece} />
                     )
                 })
             }
@@ -65,7 +81,7 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 
 
-const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
+const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number , movePiece?: (startPosition: string , newPosition: string, pieceId: string) => void;}) =>{
     const files= ["a" , "b" , "c" , "d" , "e" , "f" , "g" , "h"];
 
     
@@ -75,7 +91,7 @@ const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
                 files.map((file , index) => 
                 {
                     return(
-                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index}/>
+                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index} movePiece={movePiece}/>
                     )
                 })
            }
