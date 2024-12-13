@@ -4,35 +4,20 @@ import { useSetRecoilState } from "recoil";
 import { Grid } from "./Grid";
 import { Chess } from 'chess.js';
 import { useEffect } from "react";
-import { BoardAtom } from "@/recoil/atom";
+
 import { useDrop } from "react-dnd";
+import { ChessAtom } from "@/recoil/atom";
 
 
 
 export const Board = () =>
 {
-    const setBoard = useSetRecoilState(BoardAtom);
-    const chess = new Chess();
-    
-    const movePiece = (startPosition :string , newPosition : string , pieceId : string) =>
-    {
-        try
-        {
-            chess.move({from: startPosition , to : newPosition});
-
-            setBoard(chess.board());
-        }catch(err)
-        {
-            console.log(err);
-        }
-        
-    }
-    
+    const setChess = useSetRecoilState(ChessAtom);  
     useEffect(() => 
     {
-        
-        setBoard(chess.board());
-    
+   
+        const chess = new Chess();
+        setChess(chess);
     } , []);
 
    
@@ -42,12 +27,19 @@ const [{ isOver }, drop] = useDrop(() => ({
   drop: (item: { id: string; position: string }, monitor) => {
     const dropTarget = monitor.getClientOffset(); 
     
-     const dropElement = document.elementFromPoint(
+     let dropElement = document.elementFromPoint(
       dropTarget?.x || 0,
       dropTarget?.y || 0
-    ); // Get the DOM element at the drop position
+    ); 
 
-    const key = dropElement?.getAttribute("data-key");
+    let key = dropElement?.getAttribute("data-key");
+
+    if(key === null || key === undefined)
+    {
+        const parentElement = dropElement?.parentElement?.parentElement;
+        key = parentElement?.getAttribute("data-key");
+     
+    }
  
     const dropPosition = key;
   
@@ -71,7 +63,7 @@ const [{ isOver }, drop] = useDrop(() => ({
                 ranks.map((rank , index) =>
                 {
                     return(
-                       <Row rank={rank} rankIndex = {index} key={rank} movePiece={movePiece} />
+                       <Row rank={rank} rankIndex = {index} key={rank} />
                     )
                 })
             }
@@ -81,7 +73,7 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 
 
-const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number , movePiece?: (startPosition: string , newPosition: string, pieceId: string) => void;}) =>{
+const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
     const files= ["a" , "b" , "c" , "d" , "e" , "f" , "g" , "h"];
 
     
@@ -91,7 +83,7 @@ const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : numbe
                 files.map((file , index) => 
                 {
                     return(
-                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index} movePiece={movePiece}/>
+                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index}/>
                     )
                 })
            }
