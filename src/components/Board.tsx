@@ -1,9 +1,9 @@
 "use client"
 
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { Grid } from "./Grid";
 import { Chess } from 'chess.js';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useDrop } from "react-dnd";
 import { BoardAtom} from "@/recoil/atom";
@@ -14,14 +14,25 @@ import { BoardAtom} from "@/recoil/atom";
 export const Board = () =>
 {
     
-     let chess = new Chess(); 
-     const setBoard = useSetRecoilState(BoardAtom);
+    
+     const [chess , setChess] = useState<Chess|null>(null);
+     const [board , setBoard] = useRecoilState(BoardAtom);
     
     useEffect(() => 
     {
-        
-        setBoard(chess.board());
+        setChess(new Chess());
     } , []);
+
+    useEffect(() =>
+    {
+        if(chess)
+            setBoard(chess.board());
+    } , [chess]);
+
+    useEffect(() =>
+    {
+        console.log(board);
+    } , [board])
 
   
     
@@ -57,23 +68,25 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 const movePiece = (from : string , to : string) =>
   {
-    if(chess)
+    
+    if(chess && board )
     {
-      chess.move({from , to});
-      setBoard(chess.board());
+     
+     const fromDetails = fetchBoardIndexes(from);
+     const toDetails = fetchBoardIndexes(to);
+
+     //Is Piece already present on to index
+     const existingPieceDetails = board[toDetails.rankIndex][toDetails.fileIndex];
+
+     if(existingPieceDetails == null)
+     {
+        chess.move({from , to});
+        setBoard(chess.board());
+     }else
+     {
+        console.log("invalide move")
+     }
     }
-  
-    // const board = chess?.board();
-    // if(board )
-    // {
-    //  const [fromFile , fromRank] = from.split("");
-    //  const fromDetails = fetchBoardIndexes(from);
-    //  const toDetails = fetchBoardIndexes(to);
-
-    //  //Is Piece already present on to index
-
-    //  console.log(board[toDetails.rankIndex][toDetails.fileIndex]);
-    // }
       
   }
 
