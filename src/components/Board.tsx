@@ -6,21 +6,24 @@ import { Chess } from 'chess.js';
 import { useEffect } from "react";
 
 import { useDrop } from "react-dnd";
-import { ChessAtom } from "@/recoil/atom";
+import { BoardAtom} from "@/recoil/atom";
+
 
 
 
 export const Board = () =>
 {
-    const setChess = useSetRecoilState(ChessAtom);  
+    
+     let chess = new Chess(); 
+     const setBoard = useSetRecoilState(BoardAtom);
+    
     useEffect(() => 
     {
-   
-        const chess = new Chess();
-        setChess(chess);
+        
+        setBoard(chess.board());
     } , []);
 
-   
+  
     
 const [{ isOver }, drop] = useDrop(() => ({
   accept: "piece", 
@@ -51,6 +54,38 @@ const [{ isOver }, drop] = useDrop(() => ({
 }));
 
 
+
+const movePiece = (from : string , to : string) =>
+  {
+    if(chess)
+    {
+      chess.move({from , to});
+      setBoard(chess.board());
+    }
+  
+    // const board = chess?.board();
+    // if(board )
+    // {
+    //  const [fromFile , fromRank] = from.split("");
+    //  const fromDetails = fetchBoardIndexes(from);
+    //  const toDetails = fetchBoardIndexes(to);
+
+    //  //Is Piece already present on to index
+
+    //  console.log(board[toDetails.rankIndex][toDetails.fileIndex]);
+    // }
+      
+  }
+
+    const fetchBoardIndexes = (position : string) =>
+  {
+    const [file , rank] = position.split("");
+    const fileIndex = file.charCodeAt(0) - 97; 
+    const rankIndex = 8 - parseInt(rank, 10);
+    return {fileIndex , rankIndex};
+  }
+
+
     
     
     const ranks= ["8" , "7" , "6" , "5" , "4" , "3" , "2" , "1"];
@@ -63,7 +98,7 @@ const [{ isOver }, drop] = useDrop(() => ({
                 ranks.map((rank , index) =>
                 {
                     return(
-                       <Row rank={rank} rankIndex = {index} key={rank} />
+                       <Row rank={rank} rankIndex = {index} key={rank} movePiece={movePiece}/>
                     )
                 })
             }
@@ -73,7 +108,7 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 
 
-const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
+const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number, movePiece: (from : string , to : string) => void}) =>{
     const files= ["a" , "b" , "c" , "d" , "e" , "f" , "g" , "h"];
 
     
@@ -83,7 +118,7 @@ const Row = ({rank , rankIndex} : {rank : string , rankIndex : number}) =>{
                 files.map((file , index) => 
                 {
                     return(
-                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index}/>
+                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index} movePiece={movePiece}/>
                     )
                 })
            }

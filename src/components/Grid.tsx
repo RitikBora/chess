@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 
 import {useRecoilState, useRecoilValue } from "recoil";
 import { Piece } from "./Piece";
-import { ChessAtom } from "@/recoil/atom";
+import { BoardAtom } from "@/recoil/atom";
+;
 
 type GridDetails = {
     square : Square,
@@ -16,10 +17,9 @@ type GridDetails = {
 } | null | undefined
 
 
-export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , file : string , fileIndex : number , rankIndex : number}) =>
+export const Grid = ({rank , file , fileIndex  , rankIndex , movePiece} : {rank : string , file : string , fileIndex : number , rankIndex : number , movePiece: (from : string , to : string) => void}) =>
 {
-    const chess = useRecoilValue(ChessAtom);
-    const board = chess?.board();
+    const board = useRecoilValue(BoardAtom);
     const [gridDetails , setGridDetails] = useState<GridDetails>(null);
     
 
@@ -33,7 +33,7 @@ export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , f
         {
             setGridDetails(null);
         }
-    } , [chess]);
+    } , [board]);
 
     useEffect(() => {
  
@@ -50,7 +50,7 @@ export const Grid = ({rank , file , fileIndex  , rankIndex} : {rank : string , f
                 {file== "a"  && rank}
             </div>
             {
-                gridDetails && <Piece position={gridDetails.square} color={gridDetails.color} type ={gridDetails.type}/>
+                gridDetails && <Piece position={gridDetails.square} color={gridDetails.color} type ={gridDetails.type} movePiece={movePiece}/>
             }
             <div className={`absolute bottom-0.5 right-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
                 {rank=="1" && file}
