@@ -3,16 +3,19 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock} from 'lucide-react'
+import { BlackTimeAtom, WhiteTimeAtom } from '@/recoil/atom'
+import { useSetRecoilState } from 'recoil'
 
 interface ChessTimerProps {
   initialTime: number
   isWhite: boolean
   isActive: boolean
-  onTimeUp: () => void
 }
 
-export function ChessTimer({ initialTime, isWhite, isActive, onTimeUp }: ChessTimerProps) {
-  const [time, setTime] = useState(initialTime)
+export function ChessTimer({ initialTime, isWhite, isActive }: ChessTimerProps) {
+  const [time, setTime] = useState(initialTime);
+  const setWhiteTime = useSetRecoilState(WhiteTimeAtom);
+  const setBlackTime = useSetRecoilState(BlackTimeAtom);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
@@ -22,8 +25,11 @@ export function ChessTimer({ initialTime, isWhite, isActive, onTimeUp }: ChessTi
         setTime((prevTime) => {
           if (prevTime <= 1) {
             if (interval) clearInterval(interval)
-            onTimeUp()
-            return 0
+            if(isWhite)
+              setWhiteTime(0);
+            else
+              setBlackTime(0);
+            return 0;
           }
           return prevTime - 1
         })
@@ -32,10 +38,18 @@ export function ChessTimer({ initialTime, isWhite, isActive, onTimeUp }: ChessTi
       clearInterval(interval)
     }
 
+    if(isWhite)
+    {
+      setWhiteTime(time);
+    }else
+    {
+      setBlackTime(time);
+    }
+
     return () => {
       if (interval) clearInterval(interval)
     }
-  }, [isActive, time, onTimeUp])
+  }, [isActive, time])
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60)
