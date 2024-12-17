@@ -19,6 +19,11 @@ const BoardAtom = atom<Board>({
     default: emptyBoard
 })
 
+const TurnAtom = atom<'w'|'b'>({
+    key : "TurnAtomKey",
+    default: "w"
+})
 
 
-export {BoardAtom};
+
+export {BoardAtom , TurnAtom};

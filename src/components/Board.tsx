@@ -6,7 +6,7 @@ import { Chess } from 'chess.js';
 import { useEffect, useState } from "react";
 
 import { useDrop } from "react-dnd";
-import { BoardAtom} from "@/recoil/atom";
+import { BoardAtom, TurnAtom} from "@/recoil/atom";
 
 
 
@@ -17,10 +17,12 @@ export const Board = () =>
     
      const [chess , setChess] = useState<Chess|null>(null);
      const [board , setBoard] = useRecoilState(BoardAtom);
+     const [turn , setTurn] = useRecoilState(TurnAtom);
     
     useEffect(() => 
     {
         setChess(new Chess());
+        
     } , []);
 
     useEffect(() =>
@@ -71,6 +73,7 @@ const movePiece = (from : string , to : string) =>
       {
         chess.move({from , to});
         setBoard(chess.board());
+        setTurn(chess.turn());
       }  
     }catch(err)
     {
@@ -78,20 +81,8 @@ const movePiece = (from : string , to : string) =>
     }
   }
 
-    const fetchBoardIndexes = (position : string) =>
-  {
-    const [file , rank] = position.split("");
-    const fileIndex = file.charCodeAt(0) - 97; 
-    const rankIndex = 8 - parseInt(rank, 10);
-    return {fileIndex , rankIndex};
-  }
-
-
-    
-    
+        
     const ranks= ["8" , "7" , "6" , "5" , "4" , "3" , "2" , "1"];
-
-
 
     return(
         <div ref={drop as any} className="h-[640px] w-[640px]  bg-amber-50 flex flex-col">

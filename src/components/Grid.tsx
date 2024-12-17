@@ -43,7 +43,7 @@ export const Grid = ({rank , file , fileIndex  , rankIndex , movePiece} : {rank 
     return(
         <div  className={`h-[80px] w-[80px] flex justify-center items-center relative cursor-pointer ${
            (fileIndex + Number(rank)) % 2
-          ? "bg-green-200"
+          ? "bg-lime-600"
           : ""
       }`} onClick={() =>{}} key={file + rank} data-key={file+rank}>
             <div className={`absolute top-1 left-1 ${(fileIndex + Number(rank)) % 2 ? "text-amber-50" : "text-green-500"}`}>
