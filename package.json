@@ -19,6 +19,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
+    "react-toastify": "^11.0.0",
     "recoil": "^0.7.7",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"

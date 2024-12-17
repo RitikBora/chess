@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { useDrop } from "react-dnd";
 import { BoardAtom, TurnAtom} from "@/recoil/atom";
+import { showErrorMessage } from "@/lib/utils";
 
 
 
@@ -21,8 +22,7 @@ export const Board = () =>
     
     useEffect(() => 
     {
-        setChess(new Chess());
-        
+        setChess(new Chess()); 
     } , []);
 
     useEffect(() =>
@@ -77,7 +77,8 @@ const movePiece = (from : string , to : string) =>
       }  
     }catch(err)
     {
-      console.log(err);
+      
+      showErrorMessage("Invalid Move");
     }
   }
 
