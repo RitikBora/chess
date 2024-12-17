@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { BoardAtom, TurnAtom} from "@/recoil/atom";
 import { showErrorMessage } from "@/lib/utils";
+import { GameOverPopup } from "./GameOverPopup";
+import { Row } from "./Row";
 
 
 
@@ -19,6 +21,7 @@ export const Board = () =>
      const [chess , setChess] = useState<Chess|null>(null);
      const [board , setBoard] = useRecoilState(BoardAtom);
      const [turn , setTurn] = useRecoilState(TurnAtom);
+     const [openGameOver , setOpenGameOverPopup] = useState(false);
     
     useEffect(() => 
     {
@@ -74,6 +77,11 @@ const movePiece = (from : string , to : string) =>
         chess.move({from , to});
         setBoard(chess.board());
         setTurn(chess.turn());
+
+        if(chess.isGameOver())
+        {
+          setOpenGameOverPopup(true)
+        }
       }  
     }catch(err)
     {
@@ -95,29 +103,14 @@ const movePiece = (from : string , to : string) =>
                     )
                 })
             }
+            <GameOverPopup isOpen={openGameOver} onClose={() => {}} winner="white"/>
         </div>
     )
 }
 
 
 
-const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number, movePiece: (from : string , to : string) => void}) =>{
-    const files= ["a" , "b" , "c" , "d" , "e" , "f" , "g" , "h"];
 
-    
-    return(
-        <div className="h-[80px] w-[640px] flex">
-           {
-                files.map((file , index) => 
-                {
-                    return(
-                        <Grid file={file} fileIndex={index} rankIndex={rankIndex} rank={rank} key={file + index} movePiece={movePiece}/>
-                    )
-                })
-           }
-        </div>
-    )
-}
 
 
 

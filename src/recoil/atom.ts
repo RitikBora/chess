@@ -24,6 +24,17 @@ const TurnAtom = atom<'w'|'b'>({
     default: "w"
 })
 
+const BlackTime = atom({
+    key: "BlackTimeKey",
+    default: 600
+});
+
+const WhiteTime = atom({
+    key: "BlackTimeKey",
+    default: 600
+});
+
+
 
 
 export {BoardAtom , TurnAtom};

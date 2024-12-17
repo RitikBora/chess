@@ -18,7 +18,7 @@ export default function Home() {
           <Board/>
           <div className="h-[640px] flex flex-col justify-between py-12">
             <ChessTimer initialTime={600} isWhite={false} isActive={turn === 'b'} onTimeUp={() => {}}/>
-              <ChessTimer initialTime={600} isWhite={true} isActive={turn === 'w'} onTimeUp={() => {}}/>
+            <ChessTimer initialTime={600} isWhite={true} isActive={turn === 'w'} onTimeUp={() => {}}/>
           </div>
         </div>
       </DndProvider>
