@@ -29,10 +29,7 @@ export const Board = () =>
             setBoard(chess.board());
     } , [chess]);
 
-    useEffect(() =>
-    {
-        console.log(board);
-    } , [board])
+    
 
   
     
@@ -68,26 +65,17 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 const movePiece = (from : string , to : string) =>
   {
-    
-    if(chess && board )
+    try
     {
-     
-     const fromDetails = fetchBoardIndexes(from);
-     const toDetails = fetchBoardIndexes(to);
-
-     //Is Piece already present on to index
-     const existingPieceDetails = board[toDetails.rankIndex][toDetails.fileIndex];
-
-     if(existingPieceDetails == null)
-     {
+      if(chess && board)
+      {
         chess.move({from , to});
         setBoard(chess.board());
-     }else
-     {
-        console.log("invalide move")
-     }
+      }  
+    }catch(err)
+    {
+      console.log(err);
     }
-      
   }
 
     const fetchBoardIndexes = (position : string) =>
