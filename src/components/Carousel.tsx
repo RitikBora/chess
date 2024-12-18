@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LearnTab } from "./tabs/LearnTab"
+import { PlayTab } from "./tabs/PlayTab"
 
 
 export const Carousel = () =>
@@ -11,7 +12,9 @@ export const Carousel = () =>
                     <TabsTrigger className="w-1/2 data-[state=active]:bg-lime-600" value="play">Play</TabsTrigger>
                     <TabsTrigger className="w-1/2  data-[state=active]:bg-lime-600" value="learn">Learn</TabsTrigger>
                 </TabsList>
-                <TabsContent value="play">Make changes to your account here.</TabsContent>
+                <TabsContent value="play">
+                    <PlayTab/>
+                </TabsContent>
                 <TabsContent value="learn">
                     <LearnTab/>
                 </TabsContent>
