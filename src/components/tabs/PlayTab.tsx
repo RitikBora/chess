@@ -9,6 +9,12 @@ import {
 } from "@/components/ui/card"
 import { Button } from "../ui/button"
 import {CircuitBoardIcon , PuzzleIcon} from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogTitle  , DialogFooter, DialogHeader } from "../ui/dialog"
+import { useState } from "react"
+import { Label } from "../ui/label"
+import { Input } from "../ui/input"
+
+
 
 
 export const PlayTab = () =>
@@ -45,6 +51,18 @@ const StartGameCard = () =>
 
 const JoinGameCard = () =>
 {
+    const [isOpen , setIsOpen] = useState(false);
+    
+    const joinGame = () =>
+    {
+        setIsOpen(true);
+    }
+
+    const onClose = () =>
+    {
+        setIsOpen(false);
+    }
+
     return(
         <div className="w-1/2 ">
             <Card className="bg-lime-600">
@@ -58,9 +76,34 @@ const JoinGameCard = () =>
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button variant="default" className="text-lg bg-amber-50 w-full font-bold text-lime-600 hover:bg-amber-100" onClick={() => {}}>Join Game</Button>
+                    <Button variant="default" className="text-lg bg-amber-50 w-full font-bold text-lime-600 hover:bg-amber-100" onClick={joinGame}>Join Game</Button>
                 </CardFooter> 
             </Card>
+            <JoinRoomDialog isOpen={isOpen} onClose={onClose}/>
+
         </div>
+    )
+}
+
+const JoinRoomDialog = ({isOpen , onClose} : {isOpen : boolean , onClose : () => void}) =>
+{
+    return(
+        <Dialog open={isOpen} onOpenChange={onClose} >
+            <DialogContent className="sm:max-w-[425px] bg-stone-700 text-amber-50">
+                <DialogHeader>
+                <DialogTitle>Join Game Room</DialogTitle>
+                <DialogDescription className="text-amber-100">
+                    Enter the room link to join an existing game.
+                </DialogDescription>
+                </DialogHeader>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 pt-5">
+                        <Label htmlFor="room_id">Room Id</Label>
+                        <Input type="text" id="room_id" placeholder="TtKS2fHr" />
+                    </div>
+                <DialogFooter className="pt-2">
+                     <Button className="w-1/3 bg-lime-600 text-amber-50 hover:bg-lime-700" onClick={() => {}}>Join</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
