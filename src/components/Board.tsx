@@ -10,6 +10,7 @@ import { BlackTimeAtom, BoardAtom, TurnAtom, WhiteTimeAtom} from "@/recoil/atom"
 import { showErrorMessage } from "@/lib/utils";
 import { GameOverPopup } from "./GameOverPopup";
 import { Row } from "./Row";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -22,8 +23,13 @@ export const Board = () =>
      const [board , setBoard] = useRecoilState(BoardAtom);
      const [turn , setTurn] = useRecoilState(TurnAtom);
      const [openGameOver , setOpenGameOverPopup] = useState(false);
+
      const whiteTime = useRecoilValue(WhiteTimeAtom);
      const blackTime = useRecoilValue(BlackTimeAtom);
+
+    const searchParams = useSearchParams(); 
+    const room_id = searchParams.get("room_id");
+    const [socket , setSocket] = useState<WebSocket | null>(null);
     
     useEffect(() => 
     {
@@ -35,6 +41,26 @@ export const Board = () =>
         if(chess)
             setBoard(chess.board());
     } , [chess]);
+
+
+    useEffect(() =>
+    {
+
+        const ws = new WebSocket("http://localhost:8080");
+        setSocket(ws);
+
+        
+        ws.onopen = () =>
+        {
+            ws.send(JSON.stringify({action : "connect_room" , room_id}));    
+        }
+
+        ws.onmessage = () =>
+        {
+            
+        }
+
+    } , []);
 
 
     useEffect(() =>
@@ -88,6 +114,11 @@ const movePiece = (from : string , to : string) =>
         if(chess.isGameOver())
         {
           setOpenGameOverPopup(true)
+        }
+
+        if(socket)
+        {
+          socket.send(JSON.stringify({action: "move" , from , to}));
         }
       }  
     }catch(err)
