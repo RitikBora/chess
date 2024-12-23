@@ -1,6 +1,6 @@
 import { GameRoom } from "@/components/GameRoom"
 
-export const Room = () =>
+export default function Room ()
 {
     return(
         <GameRoom/>

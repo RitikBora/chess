@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle  , DialogFooter, 
 import { useState } from "react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
+import { useRouter } from "next/navigation"
 
 
 
@@ -29,6 +30,13 @@ export const PlayTab = () =>
 
 const StartGameCard = () =>
 {
+    const router = useRouter();
+
+    const startGame = () =>
+    {
+        const room_id = generateRandomString();
+        router.push(`/room?room_id=${room_id}`)
+    }
     return(
        <div className="w-1/2  ">
             <Card className="bg-amber-50">
@@ -42,7 +50,7 @@ const StartGameCard = () =>
                 </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button variant="default" className="text-lg bg-lime-600 w-full font-bold text-amber-50 hover:bg-lime-700" onClick={() => {}}>Start Game</Button>
+                    <Button variant="default" className="text-lg bg-lime-600 w-full font-bold text-amber-50 hover:bg-lime-700" onClick={startGame}>Start Game</Button>
                 </CardFooter> 
             </Card>
        </div>
@@ -106,4 +114,17 @@ const JoinRoomDialog = ({isOpen , onClose} : {isOpen : boolean , onClose : () =>
             </DialogContent>
         </Dialog>
     )
+}
+
+function generateRandomString(length = 8) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charactersLength);
+    result += characters.charAt(randomIndex);
+  }
+  
+  return result;
 }

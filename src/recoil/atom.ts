@@ -19,9 +19,9 @@ const BoardAtom = atom<Board>({
     default: emptyBoard
 })
 
-const TurnAtom = atom<'w'|'b'>({
+const TurnAtom = atom<'w'|'b'|'idle'>({
     key : "TurnAtomKey",
-    default: "w"
+    default: "idle"
 })
 
 const BlackTimeAtom = atom({

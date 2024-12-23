@@ -24,8 +24,8 @@ export const Board = () =>
      const [turn , setTurn] = useRecoilState(TurnAtom);
      const [openGameOver , setOpenGameOverPopup] = useState(false);
 
-     const whiteTime = useRecoilValue(WhiteTimeAtom);
-     const blackTime = useRecoilValue(BlackTimeAtom);
+    const whiteTime = useRecoilValue(WhiteTimeAtom);
+    const blackTime = useRecoilValue(BlackTimeAtom);
 
     const searchParams = useSearchParams(); 
     const room_id = searchParams.get("room_id");
@@ -45,7 +45,6 @@ export const Board = () =>
 
     useEffect(() =>
     {
-
         const ws = new WebSocket("http://localhost:8080");
         setSocket(ws);
 
@@ -55,9 +54,17 @@ export const Board = () =>
             ws.send(JSON.stringify({action : "connect_room" , room_id}));    
         }
 
-        ws.onmessage = () =>
+        ws.onmessage = (event) =>
         {
-            
+            const data = JSON.parse(event.data);
+            const action = data.action;
+            switch(action)
+            {
+              case "start":
+                setTurn('w');
+                break;
+            }
+
         }
 
     } , []);
