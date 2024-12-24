@@ -1,7 +1,6 @@
 "use client"
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Grid } from "./Grid";
 import { Chess } from 'chess.js';
 import { useEffect, useState } from "react";
 
@@ -19,7 +18,7 @@ export const Board = () =>
 {
     
     
-     const [chess , setChess] = useState<Chess|null>(null);
+     const [chess , setChess] = useState<Chess>(new Chess());
      const [board , setBoard] = useRecoilState(BoardAtom);
      const [turn , setTurn] = useRecoilState(TurnAtom);
      const [openGameOver , setOpenGameOverPopup] = useState(false);
@@ -31,11 +30,7 @@ export const Board = () =>
     const room_id = searchParams.get("room_id");
     const [socket , setSocket] = useState<WebSocket | null>(null);
     
-    useEffect(() => 
-    {
-        setChess(new Chess()); 
-    } , []);
-
+  
     useEffect(() =>
     {
         if(chess)
@@ -62,6 +57,9 @@ export const Board = () =>
             {
               case "start":
                 setTurn('w');
+                break;
+              case "move":
+                makeOpponentMove(data);
                 break;
             }
 
@@ -125,13 +123,27 @@ const movePiece = (from : string , to : string) =>
 
         if(socket)
         {
-          socket.send(JSON.stringify({action: "move" , from , to}));
+          
+          socket.send(JSON.stringify({action: "move" , room_id ,from , to , turn: chess.turn()}));
         }
       }  
     }catch(err)
     {
       
       showErrorMessage("Invalid Move");
+    }
+  }
+
+  const makeOpponentMove = (data : any) =>
+  {
+    const from = data.from;
+    const to = data.to;
+    console.log(chess);
+    if(chess && board)
+    {
+      chess.move({from , to});
+      setBoard(chess.board());
+      setTurn(chess.turn());
     }
   }
 
