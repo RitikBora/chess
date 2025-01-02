@@ -31,9 +31,11 @@ export const PlayTab = () =>
 const StartGameCard = () =>
 {
     const router = useRouter();
+    const [creatingGame , setCreatingGame]  = useState(false);
 
     const startGame = () =>
     {
+        setCreatingGame(true);
         const room_id = generateRandomString();
         router.push(`/room?room_id=${room_id}`)
     }
@@ -50,7 +52,9 @@ const StartGameCard = () =>
                 </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button variant="default" className="text-lg bg-lime-600 w-full font-bold text-amber-50 hover:bg-lime-700" onClick={startGame}>Start Game</Button>
+                    <Button variant="default" className="text-lg bg-lime-600 w-full font-bold text-amber-50 hover:bg-lime-700" onClick={startGame}>{
+                        creatingGame ? "Loading ..." : "Start Game"
+                    }</Button>
                 </CardFooter> 
             </Card>
        </div>
