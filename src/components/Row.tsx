@@ -1,6 +1,6 @@
 import { Grid } from "./Grid";
 
-export const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number, movePiece: (from : string , to : string) => void}) =>{
+export const Row = ({rank , rankIndex , movePiece} : {rank : string , rankIndex : number, movePiece: (from : string , to : string , type: "own" | "opp") => void}) =>{
     const files= ["a" , "b" , "c" , "d" , "e" , "f" , "g" , "h"];
 
     

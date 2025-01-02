@@ -10,6 +10,7 @@ import { showErrorMessage } from "@/lib/utils";
 import { GameOverPopup } from "./GameOverPopup";
 import { Row } from "./Row";
 import { useSearchParams } from "next/navigation";
+import { RoomConnectDialog } from "./RoomConnectDialog";
 
 
 
@@ -29,7 +30,13 @@ export const Board = () =>
     const searchParams = useSearchParams(); 
     const room_id = searchParams.get("room_id");
     const [socket , setSocket] = useState<WebSocket | null>(null);
-    
+
+
+    const [openConnectPopup , setOpenConnectedPopover] = useState(false);
+    const [isPlayer1 , setIsPlayer1] = useState(false);
+    const [isPlayer2Connected , setIsPlayer2Connected] = useState(false);
+
+
   
     useEffect(() =>
     {
@@ -49,24 +56,34 @@ export const Board = () =>
             ws.send(JSON.stringify({action : "connect_room" , room_id}));    
         }
 
+
         ws.onmessage = (event) =>
         {
-            const data = JSON.parse(event.data);
+          const data = JSON.parse(event.data);
             const action = data.action;
+           
             switch(action)
             {
+          
               case "start":
-                setTurn('w');
+                setTurn("w");
+                setOpenConnectedPopover(false);
+                break;
+
+                case "ready":
+                setIsPlayer2Connected(true);
+                break;
+              case "player_connected":
+                setIsPlayer1(data.isPlayer1);
+                setOpenConnectedPopover(true);
                 break;
               case "move":
-                makeOpponentMove(data);
+                movePiece(data.from , data.to , "opp");
                 break;
             }
-
         }
 
     } , []);
-
 
     useEffect(() =>
     {
@@ -106,7 +123,7 @@ const [{ isOver }, drop] = useDrop(() => ({
 
 
 
-const movePiece = (from : string , to : string) =>
+const movePiece = (from : string , to : string , type: "own"|"opp") =>
   {
     try
     {
@@ -121,29 +138,15 @@ const movePiece = (from : string , to : string) =>
           setOpenGameOverPopup(true)
         }
 
-        if(socket)
+        if(socket && type === "own")
         {
-          
-          socket.send(JSON.stringify({action: "move" , room_id ,from , to , turn: chess.turn()}));
+          socket.send(JSON.stringify({action: "move" , room_id ,from , to}));
         }
       }  
     }catch(err)
     {
       
       showErrorMessage("Invalid Move");
-    }
-  }
-
-  const makeOpponentMove = (data : any) =>
-  {
-    const from = data.from;
-    const to = data.to;
-    console.log(chess);
-    if(chess && board)
-    {
-      chess.move({from , to});
-      setBoard(chess.board());
-      setTurn(chess.turn());
     }
   }
 
@@ -160,7 +163,10 @@ const movePiece = (from : string , to : string) =>
                     )
                 })
             }
-            <GameOverPopup isOpen={openGameOver} onClose={() => {}} winner="white"/>
+            <GameOverPopup isOpen={openGameOver} onClose={() => {setOpenGameOverPopup(false)}} winner="white"/>
+            <RoomConnectDialog isOpen={openConnectPopup} onClose={() => {setOpenConnectedPopover(false)}} isPlayer1={isPlayer1} roomId={room_id} onStartGame={() => {
+              socket?.send(JSON.stringify({action : "start" , room_id}));    
+            }} isPlayer2Connected={isPlayer2Connected}/>
         </div>
     )
 }

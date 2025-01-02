@@ -17,7 +17,7 @@ type GridDetails = {
 } | null | undefined
 
 
-export const Grid = ({rank , file , fileIndex  , rankIndex , movePiece} : {rank : string , file : string , fileIndex : number , rankIndex : number , movePiece: (from : string , to : string) => void}) =>
+export const Grid = ({rank , file , fileIndex  , rankIndex , movePiece} : {rank : string , file : string , fileIndex : number , rankIndex : number , movePiece: (from : string , to : string ,  type: "own" | "opp") => void}) =>
 {
     const board = useRecoilValue(BoardAtom);
     const [gridDetails , setGridDetails] = useState<GridDetails>(null);

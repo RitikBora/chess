@@ -12,7 +12,7 @@ export const Piece = ({
   position: string;
   color: string;
   type: string;
-  movePiece: (from : string , to : string) => void
+  movePiece: (from : string , to : string  ,type: "own" | "opp") => void
   
 }) => {
 
@@ -23,7 +23,7 @@ export const Piece = ({
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<{ position: string }>();
       if (item && dropResult) {
-        movePiece(position , dropResult.position);
+        movePiece(position , dropResult.position , "own");
       }
     },
     collect: (monitor) => ({
