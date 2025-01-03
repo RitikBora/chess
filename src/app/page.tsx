@@ -1,4 +1,3 @@
-import { GameRoom } from "@/components/GameRoom";
 import { HomePage } from "@/components/Homepage";
 
 

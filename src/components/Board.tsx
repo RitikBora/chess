@@ -18,7 +18,6 @@ import { RoomConnectDialog } from "./RoomConnectDialog";
 export const Board = () =>
 {
     
-    
      const [chess , setChess] = useState<Chess>(new Chess());
      const [board , setBoard] = useRecoilState(BoardAtom);
      const [turn , setTurn] = useRecoilState(TurnAtom);
@@ -47,7 +46,9 @@ export const Board = () =>
 
     useEffect(() =>
     {
-        const ws = new WebSocket("http://localhost:8080");
+        // const ws = new WebSocket("http://localhost:8080"); // for local host
+
+        const ws = new WebSocket("wss://chess.ritikboradev.com/ws");
         setSocket(ws);
 
         
@@ -98,7 +99,7 @@ const [{ isOver }, drop] = useDrop(() => ({
   drop: (item: { id: string; position: string }, monitor) => {
     const dropTarget = monitor.getClientOffset(); 
     
-     let dropElement = document.elementFromPoint(
+     const dropElement = document.elementFromPoint(
       dropTarget?.x || 0,
       dropTarget?.y || 0
     ); 
